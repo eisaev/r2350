@@ -1,0 +1,160 @@
+Файл squashfs-root.2.mod/dev/console это специальный файл с посимвольным доступом, тогда как файл squashfs-root.3.mod/dev/console -- специальный файл с посимвольным доступом
+diff -urN squashfs-root.2.mod/root/scripts/art.sh squashfs-root.3.mod/root/scripts/art.sh
+--- squashfs-root.2.mod/root/scripts/art.sh	1970-01-01 05:00:00.000000000 +0500
++++ squashfs-root.3.mod/root/scripts/art.sh	2021-03-14 12:13:58.000000000 +0500
+@@ -0,0 +1,45 @@
++#!/usr/bin/env sh
++
++set -e
++
++BACKUP=/root/art.backup
++PWRTEMP=/tmp/art.txpwr.temp
++PWRPATCH=/tmp/art.txpwr.patch
++OUTPUT=/tmp/art.mod.bin
++MD5ORIG="16e0a5bf7f859455381a8ff4da86e170"
++MD5PATCH="9f2027ebf7e67b1ca3c827e5f9ce2c52"
++
++# Create backup of mtd5 (art)
++if [ -f "${BACKUP}" ]; then
++    echo "${BACKUP} exists. Please rename file and try again."
++    exit
++fi
++dd if="/dev/$(grep art /proc/mtd | cut -d":" -f1)" of="${BACKUP}" > /dev/null 2>&1
++
++dd if="${BACKUP}" of="${PWRTEMP}" bs=1 count=104 skip=$((0x10CE)) > /dev/null 2>&1
++MD5=$(md5sum "${PWRTEMP}" | cut -d" " -f1)
++if [ "${MD5}" = "${MD5PATCH}" ]; then
++    echo "Art already patched."
++    exit
++fi
++
++if [ "${MD5}" != "${MD5ORIG}" ]; then
++    echo "Unknown content of art partition was detected. Patching is canceled. Contact the developer."
++    exit
++fi
++
++cp "${BACKUP}" "${OUTPUT}"
++
++PRINTF=$(which printf)
++${PRINTF} "\x30\x30\x30\x30\x30\x30\x30\x30\x2E\x2E\x2E\x2C\x2E\x2E\x2E\x2C\x2E\x2E\x2E\x2C\x2E\x2E\x2E\x2E\x2C\x2A\x2E\x2E\x2C\x2A\x2E\x2E\x2C\x2A\x2E\x2E\x2E\x2E\x2C\x2A\x2E\x2E\x2C\x2A\x2E\x2E\x2C\x2A\x2E\x2E\x2E\x2E\x2C\x2A\x2E\x2E\x2C\x2A\x2E\x2E\x2C\x2A\x2E\x2E\x2E\x2E\x2C\x2A\x2E\x2E\x2C\x2A\x2E\x2E\x2C\x2A\x2E\x2E\x2E\x2E\x2C\x2A\x2E\x2E\x2C\x2A\x2E\x2E\x2C\x2A\x2E\x2E\x2E\x2E\x2C\x2A\x2E\x2E\x2C\x2A\x2E\x2E\x2C\x2A" > "${PWRPATCH}"
++dd conv=notrunc if="${PWRPATCH}" of="${OUTPUT}" bs=1 count=104 seek=$((0x10CE)) > /dev/null 2>&1
++
++echo "Patching done."
++echo "You must first unlock art partition using 'crash_unlock' hack!"
++echo
++echo "Write the modified dump using the following command:"
++printf "\tmtd write %s art\n" ${OUTPUT}
++echo
++echo "After applying 'crash_unlock' hack, don't forget to run the command:"
++printf "\tmtd erase crash\n"
++
+diff -urN squashfs-root.2.mod/root/scripts/bdata.sh squashfs-root.3.mod/root/scripts/bdata.sh
+--- squashfs-root.2.mod/root/scripts/bdata.sh	1970-01-01 05:00:00.000000000 +0500
++++ squashfs-root.3.mod/root/scripts/bdata.sh	2021-03-14 02:38:54.000000000 +0500
+@@ -0,0 +1,42 @@
++#!/usr/bin/env sh
++
++set -e
++
++BACKUP=/root/Bdata.backup
++TXTTEMP=/tmp/bdata.temp
++BINTEMP=/tmp/bdata.bin.temp
++BINDATA=/tmp/bdata.bin
++CRC32=/tmp/bdata.crc32
++OUTPUT=/tmp/bdata.mod.bin
++
++# Create backup of mtd3 (Bdata)
++if [ -f "${BACKUP}" ]; then
++    echo "${BACKUP} exists. Please rename file and try again."
++    exit
++fi
++dd if="/dev/$(grep Bdata /proc/mtd | cut -d":" -f1)" of="${BACKUP}" > /dev/null 2>&1
++
++dd if=/dev/zero of="${BINDATA}" ibs=65532 count=1 > /dev/null 2>&1
++
++bdata show > "${TXTTEMP}"
++sed -ri "/^(CountryCode|ssh_en|uart_en|boot_wait)=/d" "${TXTTEMP}"
++{ echo CountryCode=CN; echo ssh_en=1; echo uart_en=1; echo boot_wait=on; } >> "${TXTTEMP}"
++tr '\n' '\0' < "${TXTTEMP}" > "${BINTEMP}"
++dd conv=notrunc if="${BINTEMP}" of="${BINDATA}" > /dev/null 2>&1
++
++gzip -c < "${BINDATA}" | tail -c8 | head -c4 > "${CRC32}"
++dd if="${CRC32}" of="${OUTPUT}" bs=1 count=1 skip=3 seek=0 > /dev/null 2>&1
++dd if="${CRC32}" of="${OUTPUT}" bs=1 count=1 skip=2 seek=1 > /dev/null 2>&1
++dd if="${CRC32}" of="${OUTPUT}" bs=1 count=1 skip=1 seek=2 > /dev/null 2>&1
++dd if="${CRC32}" of="${OUTPUT}" bs=1 count=1 skip=0 seek=3 > /dev/null 2>&1
++dd if="${BINDATA}" of="${OUTPUT}" bs=1 seek=4 > /dev/null 2>&1
++
++echo "Patching done."
++echo "You must first unlock Bdata partition using 'crash_unlock' hack!"
++echo
++echo "Write the modified dump using the following command:"
++printf "\tmtd write %s Bdata\n" ${OUTPUT}
++echo
++echo "After applying 'crash_unlock' hack, don't forget to run the command:"
++printf "\tmtd erase crash\n"
++
+diff -urN squashfs-root.2.mod/root/scripts/crash.sh squashfs-root.3.mod/root/scripts/crash.sh
+--- squashfs-root.2.mod/root/scripts/crash.sh	1970-01-01 05:00:00.000000000 +0500
++++ squashfs-root.3.mod/root/scripts/crash.sh	2021-03-14 02:57:07.000000000 +0500
+@@ -0,0 +1,21 @@
++#!/usr/bin/env sh
++
++set -e
++
++CRASH=/tmp/crash_unlock.bin
++CRASHDATA=/tmp/crash.data
++
++dd if=/dev/zero ibs=65536 count=1 2> /dev/null | tr "\000" "\377" > "${CRASH}"
++PRINTF=$(which printf)
++${PRINTF} "\xa5\x5a\0\0" > "${CRASHDATA}"
++dd conv=notrunc if="${CRASHDATA}" of="${CRASH}" bs=1 count=4 > /dev/null 2>&1
++
++echo "'crash_unlock' hack generated."
++echo
++echo "Write 'crash_unlock' dump using the following command:"
++printf "\tmtd write %s crash\n" ${CRASH}
++printf "\treboot\n"
++echo
++echo "After applying 'crash_unlock' hack, don't forget to run the command:"
++printf "\tmtd erase crash\n"
++
+diff -urN squashfs-root.2.mod/root/scripts/README.txt squashfs-root.3.mod/root/scripts/README.txt
+--- squashfs-root.2.mod/root/scripts/README.txt	1970-01-01 05:00:00.000000000 +0500
++++ squashfs-root.3.mod/root/scripts/README.txt	2021-03-14 23:45:29.796241153 +0500
+@@ -0,0 +1,35 @@
++art.sh - patching `art` partition on the black version of the router to equalize the 2.4 GHz WiFi transmission power limits with the white version
++bdata.sh - patching `Bdata` partition to remove some restrictions (SSH access, access to the u-boot console, etc.)
++crash.sh - `crash` partition dump generator for switching the router to emergency mode, in which all partitions become writable (for example, Bdata, art)
++
++  Patch Bdata Partition
++1. Generate a dump of the `crash` partition:
++    /root/crash.sh
++2. Flash the generated dump of the `crash` partition:
++    mtd write /tmp/crash_unlock.bin crash
++3. Reboot:
++    reboot
++4. Read and patch the dump of the `Bdata` partition:
++    /root/bdata.sh
++5. Flash modified dump of Bdata partition:
++    mtd write /tmp/bdata.mod.bin Bdata
++6. Erase the `crash` partition:
++    mtd erase crash
++7. Reboot:
++    reboot
++
++  Patch art Partition (for black version only)
++1. Generate a dump of the `crash` partition:
++    /root/crash.sh
++2. Flash the generated dump of the `crash` partition:
++    mtd write /tmp/crash_unlock.bin crash
++3. Reboot:
++    reboot
++4. Read and patch the dump of the `art` partition:
++    /root/art.sh
++5. Flash modified dump of Bdata partition:
++    mtd write /tmp/art.mod.bin art
++6. Erase the `crash` partition:
++    mtd erase crash
++7. Reboot:
++    reboot
