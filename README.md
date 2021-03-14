@@ -39,7 +39,7 @@ python3.7 -c 'from calc_passwd import calc_passwd; print(calc_passwd("12345/E0QM
 ```
 - [Online](https://www.oxygen7.cn/miwifi/)
 
-## Flash Modified RootFS
+## Flash Modified RootFS (so far, only for the black version of the router!)
 - Obtain SSH Access
 - Download [squashfs-root.3.mod.bin](https://mega.nz/file/mNtUwaZD#GBIuSu1dqR9qcVwo2bn08X3JAGYSbC0Fmfiuw0Rrrgs)
 - Copy `squashfs-root.3.mod.bin` to the router (on PC):
