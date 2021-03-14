@@ -20,6 +20,18 @@ http://192.168.31.1/cgi-bin/luci/;stok=<STOK>/api/misystem/set_config_iotdev?bss
 ```
 - Wait 30-60 seconds (this is the time required to generate keys for the SSH server on the router)
 
+## Create Full Backup
+- Obtain SSH Access
+- Create backup of all flash (on router):
+```
+dd if=/dev/mtd0 of=/tmp/ALL.backup
+```
+- Copy backup to PC (on PC):
+```
+scp root@192.168.31.1:/tmp/ALL.backup ./
+```
+Tip: backup of the original firmware, taken three times, increases the chances of recovery :)
+
 ## Calculate The Password
 - Locally using python [script](https://github.com/eisaev/ax3600-files/blob/master/scripts/calc_passwd.py) (replace "12345/E0QM98765" with your router's serial number):
 ```
