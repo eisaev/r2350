@@ -1,0 +1,26 @@
+Файл squashfs-root.1.mod/dev/console это специальный файл с посимвольным доступом, тогда как файл squashfs-root.2.mod/dev/console -- специальный файл с посимвольным доступом
+diff -ur squashfs-root.1.mod/lib/wifi/qcawifi.sh squashfs-root.2.mod/lib/wifi/qcawifi.sh
+--- squashfs-root.1.mod/lib/wifi/qcawifi.sh	2021-03-12 16:39:21.000000000 +0500
++++ squashfs-root.2.mod/lib/wifi/qcawifi.sh	2021-03-13 19:05:21.000000000 +0500
+@@ -2040,7 +2040,7 @@
+ 				max_power=11
+ 			fi
+ 		fi
+-		config_set "$device" max_power "$max_power"
++		uci set wireless.${device}.max_power="${max_power}"
+ 
+ 		config_get txpwr "$device" txpwr
+ 		if [ "$txpwr" = "mid" ]; then
+diff -ur squashfs-root.1.mod/usr/lib/lua/xiaoqiang/util/XQWifiUtil.lua squashfs-root.2.mod/usr/lib/lua/xiaoqiang/util/XQWifiUtil.lua
+--- squashfs-root.1.mod/usr/lib/lua/xiaoqiang/util/XQWifiUtil.lua	2021-03-12 16:36:22.000000000 +0500
++++ squashfs-root.2.mod/usr/lib/lua/xiaoqiang/util/XQWifiUtil.lua	2021-03-13 19:04:56.000000000 +0500
+@@ -770,7 +770,8 @@
+         item["signal"] = wifiNet.networks[index].signal
+         item["password"] = key
+         item["encryption"] = encryption
+-        item["txpwr"] = wifiNet.networks[index].txpwr
++--        item["txpwr"] = wifiNet.networks[index].txpwr
++        item["txpwr"] = wifiNet.networks[index].txpower
+         item["max_power"] = getWifiMaxPower(wifiNet.device)
+         item["bsd"] = wifiNet.networks[index].bsd
+         item["txbf"] = wifiNet.networks[index].txbf

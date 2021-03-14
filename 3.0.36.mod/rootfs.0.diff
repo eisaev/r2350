@@ -1,0 +1,54 @@
+Файл squashfs-root.orig/dev/console это специальный файл с посимвольным доступом, тогда как файл squashfs-root.0.mod/dev/console -- специальный файл с посимвольным доступом
+diff -ur squashfs-root.orig/etc/init.d/dropbear squashfs-root.0.mod/etc/init.d/dropbear
+--- squashfs-root.orig/etc/init.d/dropbear	2020-08-06 15:02:00.000000000 +0500
++++ squashfs-root.0.mod/etc/init.d/dropbear	2021-01-08 23:20:02.055567796 +0500
+@@ -131,8 +131,7 @@
+ {
+ 	# 稳定版不能打开ssh服务
+ 	flg_ssh=`nvram get ssh_en`
+-	channel=`/sbin/uci get /usr/share/xiaoqiang/xiaoqiang_version.version.CHANNEL`
+-	if [ "$flg_ssh" != "1" -o "$channel" = "release" ]; then
++	if [ "$flg_ssh" != "1" ]; then
+ 		return 0
+ 	fi
+ 	
+diff -ur squashfs-root.orig/lib/preinit/31_restore_nvram squashfs-root.0.mod/lib/preinit/31_restore_nvram
+--- squashfs-root.orig/lib/preinit/31_restore_nvram	2020-08-06 15:04:04.000000000 +0500
++++ squashfs-root.0.mod/lib/preinit/31_restore_nvram	2021-01-08 12:42:29.641634035 +0500
+@@ -97,7 +97,7 @@
+ 	# OTA upgrade
+ 	if [ "$restore" = "2" ]; then
+ 		do_xiaoqiang_defaults
+-		flag_override
++		#flag_override
+ 	fi
+ 
+ 	if [ "$ft_mode" = "1" ]; then
+diff -ur squashfs-root.orig/lib/preinit/80_mount_root squashfs-root.0.mod/lib/preinit/80_mount_root
+--- squashfs-root.orig/lib/preinit/80_mount_root	2020-08-06 15:04:04.000000000 +0500
++++ squashfs-root.0.mod/lib/preinit/80_mount_root	2021-01-08 22:55:55.660760681 +0500
+@@ -3,7 +3,7 @@
+ # Copyright (C) 2010 Vertical Communications
+ 
+ do_mount_root() {
+-	mount_root ram
++	mount_root
+ 	boot_run_hook preinit_mount_root
+ 	[ -f /sysupgrade.tgz ] && {
+ 		echo "- config restore -"
+diff -ur squashfs-root.orig/usr/share/xiaoqiang/xiaoqiang-defaults.txt squashfs-root.0.mod/usr/share/xiaoqiang/xiaoqiang-defaults.txt
+--- squashfs-root.orig/usr/share/xiaoqiang/xiaoqiang-defaults.txt	2020-08-06 14:21:37.000000000 +0500
++++ squashfs-root.0.mod/usr/share/xiaoqiang/xiaoqiang-defaults.txt	2021-01-08 10:48:48.496858377 +0500
+@@ -6,9 +6,10 @@
+ stdin=serial
+ stdout=serial
+ stderr=serial
+-uart_en=0
++ssh_en=1
++uart_en=1
+ telnet_en=0
+-boot_wait=off
++boot_wait=on
+ restore_defaults=0
+ wl0_ssid=Xiaomi_5G
+ wl1_ssid=Xiaomi

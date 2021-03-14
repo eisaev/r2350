@@ -1,0 +1,280 @@
+Файл squashfs-root.0.mod/dev/console это специальный файл с посимвольным доступом, тогда как файл squashfs-root.1.mod/dev/console -- специальный файл с посимвольным доступом
+diff -ur squashfs-root.0.mod/lib/wifi/qcawifi.sh squashfs-root.1.mod/lib/wifi/qcawifi.sh
+--- squashfs-root.0.mod/lib/wifi/qcawifi.sh	2020-08-06 14:21:37.000000000 +0500
++++ squashfs-root.1.mod/lib/wifi/qcawifi.sh	2021-03-12 16:39:21.000000000 +0500
+@@ -2025,7 +2025,7 @@
+ 		if [ "$bdmode" = "24G" ]; then
+ 			max_power=28
+ 		else
+-			max_power=26
++			max_power=29
+ 		fi
+ 		if [ "$bd_country_code" = "EU" ]; then
+ 			if [ "$bdmode" = "24G" ]; then
+@@ -2040,14 +2040,17 @@
+ 				max_power=11
+ 			fi
+ 		fi
++		config_set "$device" max_power "$max_power"
+ 
+ 		config_get txpwr "$device" txpwr
+ 		if [ "$txpwr" = "mid" ]; then
+ 			txpower=`expr $max_power - 1`
+ 		elif [ "$txpwr" = "min" ]; then
+ 			txpower=`expr $max_power - 3`
+-		else
++		elif [ "$txpwr" = "max" ]; then
+ 			txpower="$max_power"
++		else
++			txpower="$txpwr"
+ 		fi
+ 		txpower="${txpower:-$vif_txpower}"
+ 		[ -z "$txpower" ] || iwconfig "$ifname" txpower "${txpower%%.*}"
+diff -ur squashfs-root.0.mod/usr/lib/lua/luci/view/web/apsetting/wifi.htm squashfs-root.1.mod/usr/lib/lua/luci/view/web/apsetting/wifi.htm
+--- squashfs-root.0.mod/usr/lib/lua/luci/view/web/apsetting/wifi.htm	2020-08-06 15:04:49.000000000 +0500
++++ squashfs-root.1.mod/usr/lib/lua/luci/view/web/apsetting/wifi.htm	2021-03-12 17:48:10.575725136 +0500
+@@ -150,6 +150,17 @@
+         <input type="hidden" name="bandwidth" value="{$bandwidth}">
+         <input type="hidden" name="txpwr" value="{$txpwr}">
+         <div class="form-item-select">
++            <label class="k"><%:信号强度%></label>
++            <span class="v">
++                <select name="txpwr" class="beautify txpwr" >
++                    {for(var i=1; i<=$max_power; i++)}
++                        <option value="{i}"{if ($txpwr == i || ($max_power == i && $txpwr == "max") || ($max_power - 1 == i && $txpwr == "mid") || ($max_power - 3 == i && $txpwr == "min"))} selected{/if}>{i}</option>
++                    {/for}
++                </select>
++            </span>
++            <em class="t"></em>
++        </div>
++        <!-- div class="form-item-select">
+         <label class="k"><%:信号强度%></label>
+         <span class="v">
+             <select name="txpwr" class="beautify txpwr">
+@@ -159,7 +170,7 @@
+             </select>
+         </span>
+         <em class="t"></em>
+-    </div>
++    </div -->
+     {else}
+     <div class="form-item-select">
+         <label class="k"><%:无线信道%></label>
+@@ -262,6 +273,17 @@
+         <div class="form-item-select">
+             <label class="k"><%:信号强度%></label>
+             <span class="v">
++                <select name="txpwr" class="beautify txpwr" >
++                    {for(var i=1; i<=$max_power; i++)}
++                        <option value="{i}"{if ($txpwr == i || ($max_power == i && $txpwr == "max") || ($max_power - 1 == i && $txpwr == "mid") || ($max_power - 3 == i && $txpwr == "min"))} selected{/if}>{i}</option>
++                    {/for}
++                </select>
++            </span>
++            <em class="t0"></em>
++        </div>
++        <!-- div class="form-item-select">
++            <label class="k"><%:信号强度%></label>
++            <span class="v">
+ 
+                 <select name="txpwr" class="beautify txpwr" >
+                     <option value="max"{if ($txpwr == "max")} selected{/if}><%:穿墙%></option>
+@@ -270,7 +292,7 @@
+                 </select>
+             </span>
+             <em class="t"></em>
+-        </div>
++        </div -->
+     {else}
+     <div class="form-item-select">
+         <label class="k"><%:无线信道%></label>
+@@ -312,6 +334,17 @@
+     <div class="form-item-select">
+         <label class="k"><%:信号强度%></label>
+         <span class="v">
++            <select name="txpwr" class="beautify txpwr" >
++                {for(var i=1; i<=$max_power; i++)}
++                    <option value="{i}"{if ($txpwr == i || ($max_power == i && $txpwr == "max") || ($max_power - 1 == i && $txpwr == "mid") || ($max_power - 3 == i && $txpwr == "min"))} selected{/if}>{i}</option>
++                {/for}
++            </select>
++        </span>
++        <em class="t"></em>
++    </div>
++    <!-- div class="form-item-select">
++        <label class="k"><%:信号强度%></label>
++        <span class="v">
+ 
+             <select name="txpwr" class="beautify txpwr" >
+                 <option value="max"{if ($txpwr == "max")} selected{/if}><%:穿墙%></option>
+@@ -320,7 +353,7 @@
+             </select>
+         </span>
+         <em class="t"></em>
+-    </div>
++    </div -->
+     {/if}
+     <div class="form-contral">
+         <button type="submit" class="btn btn-primary btn-l hidden"><span><%:保存%></span></button>
+@@ -434,6 +467,7 @@
+                         channelInfo: wifiitem.channelInfo,
+                         hidden: wifiitem.hidden,
+                         txpwr: wifiitem.txpwr,
++                        max_power: wifiitem.max_power,
+                         enabled: wifiitem.enabled
+                     };
+                     if( i == 0 && rsp.bsd == 1 ){
+@@ -976,4 +1010,4 @@
+         $.pub( 'wifi:bindEvent' );
+     });
+ }());
+-</script>
+\ В конце файла нет новой строки
++</script>
+diff -ur squashfs-root.0.mod/usr/lib/lua/luci/view/web/setting/wifi.htm squashfs-root.1.mod/usr/lib/lua/luci/view/web/setting/wifi.htm
+--- squashfs-root.0.mod/usr/lib/lua/luci/view/web/setting/wifi.htm	2020-08-06 15:04:49.000000000 +0500
++++ squashfs-root.1.mod/usr/lib/lua/luci/view/web/setting/wifi.htm	2021-03-12 17:29:43.152449898 +0500
+@@ -81,8 +81,9 @@
+         <!-- <%include("web/inc/guestwifi")%> -->
+         <!-- <%end%> -->
+ <!-- end -->
+-    <%if romChannel == "release" and features["system"]["i18n"] == "1" and ccode ~= "US" then%>
+-        <div class="mod-set mod-countrycode" style="display:none">
++    <!-- %if romChannel == "release" and features["system"]["i18n"] == "1" and ccode ~= "US" then% -->
++        <!-- div class="mod-set mod-countrycode" style="display:none" -->
++        <div class="mod-set mod-countrycode">
+             <div class="hd">
+                 <h3><%:无线网络所在区域%></h3>
+             </div>
+@@ -101,7 +102,7 @@
+                 </div>
+             </div>
+         </div>
+-    <%end%>
++    <!-- %end% -->
+ 
+     <%if features["wifi"]["wifi_mu_mimo"] == "1" then%>
+         <div class="mod-set mod-wifi">
+@@ -265,6 +266,17 @@
+     <div class="form-item-select">
+         <label class="k"><%:信号强度%></label>
+         <span class="v">
++            <select name="txpwr" class="beautify txpwr" >
++                {for(var i=1; i<=$max_power; i++)}
++                    <option value="{i}"{if ($txpwr == i || ($max_power == i && $txpwr == "max") || ($max_power - 1 == i && $txpwr == "mid") || ($max_power - 3 == i && $txpwr == "min"))} selected{/if}>{i}</option>
++                {/for}
++            </select>
++        </span>
++        <em class="t0"></em>
++    </div>
++    <!-- div class="form-item-select">
++        <label class="k"><%:信号强度%></label>
++        <span class="v">
+             <select name="txpwr" class="beautify txpwr">
+                 <option value="max"{if ($txpwr == "max")} selected{/if}><%:穿墙%></option>
+                 <option value="mid"{if ($txpwr == "mid")} selected{/if}><%:标准%></option>
+@@ -272,7 +284,7 @@
+             </select>
+         </span>
+         <em class="t0"></em>
+-    </div>
++    </div -->
+     {/if}
+     {if ($wifitype != 0)}
+     <div class="form-contral">
+@@ -365,13 +377,24 @@
+         <label class="k"><%:信号强度%></label>
+         <span class="v">
+             <select name="txpwr" class="beautify txpwr" >
++                {for(var i=1; i<=$max_power; i++)}
++                    <option value="{i}"{if ($txpwr == i || ($max_power == i && $txpwr == "max") || ($max_power - 1 == i && $txpwr == "mid") || ($max_power - 3 == i && $txpwr == "min"))} selected{/if}>{i}</option>
++                {/for}
++            </select>
++        </span>
++        <em class="t0"></em>
++    </div>
++    <!-- div class="form-item-select">
++        <label class="k"><%:信号强度%></label>
++        <span class="v">
++            <select name="txpwr" class="beautify txpwr" >
+                 <option value="max"{if ($txpwr == "max")} selected{/if}><%:穿墙%></option>
+                 <option value="mid"{if ($txpwr == "mid")} selected{/if}><%:标准%></option>
+                 <option value="min"{if ($txpwr == "min")} selected{/if}><%:节能%></option>
+             </select>
+         </span>
+         <em class="t0"></em>
+-    </div>
++    </div -->
+     {/if}
+     <div class="form-contral">
+         <button type="submit" class="btn btn-primary btn-l hidden"><span><%:保存%></span></button>
+@@ -481,6 +504,7 @@
+                         kickthreshold:wifiitem.kickthreshold,
+                         hidden: wifiitem.hidden,
+                         txpwr: wifiitem.txpwr,
++                        max_power: wifiitem.max_power,
+                         txbf: wifiitem.txbf,
+                         enabled: wifiitem.enabled
+                     };
+diff -ur squashfs-root.0.mod/usr/lib/lua/xiaoqiang/util/XQWifiUtil.lua squashfs-root.1.mod/usr/lib/lua/xiaoqiang/util/XQWifiUtil.lua
+--- squashfs-root.0.mod/usr/lib/lua/xiaoqiang/util/XQWifiUtil.lua	2020-08-06 15:04:45.000000000 +0500
++++ squashfs-root.1.mod/usr/lib/lua/xiaoqiang/util/XQWifiUtil.lua	2021-03-12 16:36:22.000000000 +0500
+@@ -771,6 +771,7 @@
+         item["password"] = key
+         item["encryption"] = encryption
+         item["txpwr"] = wifiNet.networks[index].txpwr
++        item["max_power"] = getWifiMaxPower(wifiNet.device)
+         item["bsd"] = wifiNet.networks[index].bsd
+         item["txbf"] = wifiNet.networks[index].txbf
+         item["ax"] = wifiNet.networks[index].ax
+@@ -3847,6 +3848,11 @@
+     return enabled
+ end
+ 
++function getWifiMaxPower(wifiDev)
++    local uci = require("luci.model.uci").cursor()
++    return uci:get("wireless", wifiDev, "max_power")
++end
++
+ --wifi-iface
+ function apcli_get_real_signal(ifname)
+     if ifname then
+diff -ur squashfs-root.0.mod/usr/lib/lua/xiaoqiang/XQCountryCode.lua squashfs-root.1.mod/usr/lib/lua/xiaoqiang/XQCountryCode.lua
+--- squashfs-root.0.mod/usr/lib/lua/xiaoqiang/XQCountryCode.lua	2020-08-06 15:04:45.000000000 +0500
++++ squashfs-root.1.mod/usr/lib/lua/xiaoqiang/XQCountryCode.lua	2021-03-12 17:07:15.181411517 +0500
+@@ -7,28 +7,28 @@
+ end
+ 
+ COUNTRY_CODE = {
+-    {["c"] = "CN", ["n"] = _("中国大陆"), ["p"] = false},
+-    {["c"] = "HK", ["n"] = _("香港地区"), ["p"] = false},
+-    {["c"] = "TW", ["n"] = _("台湾地区"), ["p"] = false},
++    {["c"] = "CN", ["n"] = _("中国大陆"), ["p"] = true},
++    {["c"] = "HK", ["n"] = _("香港地区"), ["p"] = true},
++    {["c"] = "TW", ["n"] = _("台湾地区"), ["p"] = true},
+     {["c"] = "KR", ["n"] = _("韩国"), ["p"] = true},
+-    {["c"] = "US", ["n"] = _("美国"), ["p"] = false},
++    {["c"] = "US", ["n"] = _("美国"), ["p"] = true},
+     {["c"] = "SG", ["n"] = _("新加坡"), ["p"] = true},
+     {["c"] = "MY", ["n"] = _("马来西亚"), ["p"] = true},
+-    {["c"] = "IN", ["n"] = _("印度"), ["p"] = false},
+-    {["c"] = "CA", ["n"] = _("加拿大"), ["p"] = false},
++    {["c"] = "IN", ["n"] = _("印度"), ["p"] = true},
++    {["c"] = "CA", ["n"] = _("加拿大"), ["p"] = true},
+     {["c"] = "FR", ["n"] = _("法国"), ["p"] = true},
+     {["c"] = "DE", ["n"] = _("德国"), ["p"] = true},
+     {["c"] = "IT", ["n"] = _("意大利"), ["p"] = true},
+     {["c"] = "ES", ["n"] = _("西班牙"), ["p"] = true},
+-    {["c"] = "PH", ["n"] = _("菲律宾"), ["p"] = false},
++    {["c"] = "PH", ["n"] = _("菲律宾"), ["p"] = true},
+     {["c"] = "ID", ["n"] = _("印度尼西亚"), ["p"] = true},
+     {["c"] = "TH", ["n"] = _("泰国"), ["p"] = true},
+     {["c"] = "VN", ["n"] = _("越南"), ["p"] = true},
+     {["c"] = "BR", ["n"] = _("巴西"), ["p"] = true},
+     {["c"] = "RU", ["n"] = _("俄罗斯"), ["p"] = true},
+-    {["c"] = "MX", ["n"] = _("墨西哥"), ["p"] = false},
++    {["c"] = "MX", ["n"] = _("墨西哥"), ["p"] = true},
+     {["c"] = "TR", ["n"] = _("土耳其"), ["p"] = true},
+-    {["c"] = "EU", ["n"] = _("欧洲"), ["p"] = false},
++    {["c"] = "EU", ["n"] = _("欧洲"), ["p"] = true},
+     {["c"] = "AE", ["n"] = _("阿拉伯联合酋长国（迪拜）"), ["p"] = true},
+     {["c"] = "AU", ["n"] = _("澳大利亚"), ["p"] = true},
+     {["c"] = "BE", ["n"] = _("比利时"), ["p"] = true},
