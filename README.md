@@ -34,8 +34,14 @@ Tip: backup of the original firmware, taken three times, increases the chances o
 
 ## Calculate The Password
 - Locally using shell (replace "12345/E0QM98765" with your router's serial number):
+ 
+On Linux
 ```
 printf "%s6d2df50a-250f-4a30-a5e6-d44fb0960aa0" "12345/E0QM98765" | md5sum - | head -c8 && echo
+```
+On macOS
+```
+printf "%s6d2df50a-250f-4a30-a5e6-d44fb0960aa0" "12345/E0QM98765" | md5 | head -c8
 ```
 - Locally using python [script](https://github.com/eisaev/ax3600-files/blob/master/scripts/calc_passwd.py) (replace "12345/E0QM98765" with your router's serial number):
 ```
