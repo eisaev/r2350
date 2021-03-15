@@ -64,6 +64,7 @@ mtd write squashfs-root.3.mod.bin rootfs
 ```
 reboot
 ```
+- Reset router to factory defaults.
 
 ## Patch Bdata Partition (on router)
 - Generate a dump of the `crash` partition:
