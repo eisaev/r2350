@@ -69,7 +69,7 @@ reboot
 ## Patch Bdata Partition (on router)
 - Generate a dump of the `crash` partition:
 ```
-/root/crash.sh
+/root/scripts/crash.sh
 ```
 - Flash the generated dump of the `crash` partition:
 ```
@@ -81,7 +81,7 @@ reboot
 ```
 - Read and patch the dump of the `Bdata` partition:
 ```
-/root/bdata.sh
+/root/scripts/bdata.sh
 ```
 - Flash modified dump of Bdata partition:
 ```
@@ -99,7 +99,7 @@ reboot
 ## Patch art Partition (for black version only; on router)
 - Generate a dump of the `crash` partition:
 ```
-/root/crash.sh
+/root/scripts/crash.sh
 ```
 - Flash the generated dump of the `crash` partition:
 ```
@@ -111,7 +111,7 @@ reboot
 ```
 - Read and patch the dump of the `art` partition:
 ```
-/root/art.sh
+/root/scripts/art.sh
 ```
 - Flash modified dump of Bdata partition:
 ```
