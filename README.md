@@ -33,6 +33,10 @@ scp root@192.168.31.1:/tmp/ALL.backup ./
 Tip: backup of the original firmware, taken three times, increases the chances of recovery :)
 
 ## Calculate The Password
+- Locally using shell (replace "12345/E0QM98765" with your router's serial number):
+```
+printf "%s6d2df50a-250f-4a30-a5e6-d44fb0960aa0" "12345/E0QM98765" | md5sum - | head -c8 && echo
+```
 - Locally using python [script](https://github.com/eisaev/ax3600-files/blob/master/scripts/calc_passwd.py) (replace "12345/E0QM98765" with your router's serial number):
 ```
 python3.7 -c 'from calc_passwd import calc_passwd; print(calc_passwd("12345/E0QM98765"))'
