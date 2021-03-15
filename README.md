@@ -58,7 +58,7 @@ scp squashfs-root.3.mod.bin root@192.168.31.1:/tmp/
 ```
 - Flash modified RootFS (on router):
 ```
-mtd write squashfs-root.3.mod.bin rootfs
+mtd write /tmp/squashfs-root.3.mod.bin rootfs
 ```
 - Reboot router (on router):
 ```
