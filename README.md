@@ -129,3 +129,11 @@ mtd erase crash
 ```
 reboot
 ```
+
+## Disable LED
+- Login to the router web interface and get the value of `stok=` from the URL
+- Open a new tab and go to the following URL (replace <STOK> with the stok value gained above):
+```
+http://192.168.31.1/cgi-bin/luci/;stok=<STOK>/api/misystem/led?on=0
+```
+
