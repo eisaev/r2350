@@ -51,14 +51,18 @@ python3.7 -c 'from calc_passwd import calc_passwd; print(calc_passwd("12345/E0QM
 
 ## Flash Modified RootFS (so far, only for the black version of the router!)
 - Obtain SSH Access
-- Download [squashfs-root.3.mod.bin](https://mega.nz/file/mNtUwaZD#GBIuSu1dqR9qcVwo2bn08X3JAGYSbC0Fmfiuw0Rrrgs)
-- Copy `squashfs-root.3.mod.bin` to the router (on PC):
+- Download [squashfs-root.4.mod.bin](https://mega.nz/file/jI1gjagY#qw82cqG7P4fWU4zQaBtZeOwP2f8YTLYWN7aKXO4dLqk)
+- Copy `squashfs-root.4.mod.bin` to the router (on PC):
 ```
-scp squashfs-root.3.mod.bin root@192.168.31.1:/tmp/
+scp squashfs-root.4.mod.bin root@192.168.31.1:/tmp/
 ```
 - Flash modified RootFS (on router):
 ```
-mtd write /tmp/squashfs-root.3.mod.bin rootfs
+mtd write /tmp/squashfs-root.4.mod.bin rootfs
+```
+- Erase overlay data (on router):
+```
+mtd erase rootfs_data
 ```
 - Reboot router (on router):
 ```

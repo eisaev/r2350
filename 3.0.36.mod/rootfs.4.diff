@@ -1,0 +1,25 @@
+Файл squashfs-root.3.mod/dev/console это специальный файл с посимвольным доступом, тогда как файл squashfs-root.4.mod/dev/console -- специальный файл с посимвольным доступом
+diff -urN squashfs-root.3.mod/etc/init.d/boot squashfs-root.4.mod/etc/init.d/boot
+--- squashfs-root.3.mod/etc/init.d/boot	2020-08-06 15:04:04.000000000 +0500
++++ squashfs-root.4.mod/etc/init.d/boot	2021-03-16 13:01:31.014569892 +0500
+@@ -12,7 +12,7 @@
+ 	[ -z "$files" ] && return 0
+ 	mkdir -p /tmp/.uci
+ 	for file in $files; do
+-		( . "./$(basename $file)" ) && rm -f "$file"
++		( . "./$(basename $file)" ) #$& rm -f "$file"
+ 	done
+ 	uci commit
+ }
+diff -urN squashfs-root.3.mod/lib/preinit/90_mount_bind_etc squashfs-root.4.mod/lib/preinit/90_mount_bind_etc
+--- squashfs-root.3.mod/lib/preinit/90_mount_bind_etc	2020-08-06 14:21:37.000000000 +0500
++++ squashfs-root.4.mod/lib/preinit/90_mount_bind_etc	2021-03-16 12:43:44.366734629 +0500
+@@ -175,7 +175,7 @@
+ 	fi
+ 
+ 	# remove /etc/uci-defaults, merge uci-defaults only when overlay format or ota
+-	rm -rf /etc/uci-defaults/*
++	#rm -rf /etc/uci-defaults/*
+ 
+ 	return 0
+ }
