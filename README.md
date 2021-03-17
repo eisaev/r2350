@@ -137,3 +137,9 @@ reboot
 http://192.168.31.1/cgi-bin/luci/;stok=<STOK>/api/misystem/led?on=0
 ```
 
+## Debricking (lite)
+If you have a healthy bootloader, you can use recovery via TFTP using programs like TinyPXE on Windows or dnsmasq on Linux. To switch the router to TFTP recovery mode, hold down the reset button, connect the power supply, and release the button after about 10 seconds. The router must be connected directly to the PC via the LAN port.
+
+## Debricking
+You will need a full dump of your flash, a CH341 programmer, and a clip for in-circuit programming.
+
