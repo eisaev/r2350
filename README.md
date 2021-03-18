@@ -56,7 +56,7 @@ python3.7 -c 'from calc_passwd import calc_passwd; print(calc_passwd("12345/E0QM
 ```
 scp flash.sh root@192.168.31.1:/tmp/
 ```
-- Download [squashfs-root.6.mod.bin](https://mega.nz/file/WAszla7J#66I_8tX7zLXnH9nawaap_UrKsifll-JjxetzGNejgc4)
+- Download [squashfs-root.6.mod.bin](https://mega.nz/file/bZ8UjY5D#rq7A9eAaRmjVFZWyvbY6Dpg4uy948eKETy7kUdC1N24)
 - Copy `squashfs-root.6.mod.bin` to the router (on PC):
 ```
 scp squashfs-root.6.mod.bin root@192.168.31.1:/tmp/

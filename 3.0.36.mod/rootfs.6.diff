@@ -139,7 +139,7 @@ diff -urN squashfs-root.5.mod/usr/share/xiaoqiang/xiaoqiang_version squashfs-roo
  config core 'version'
  	# ROM ver
 -	option ROM '3.0.36_mod5'
-+	option ROM '3.0.36_mod6
++	option ROM '3.0.36_mod6'
  	# channel
 -	option CHANNEL 'custom'
 +	option CHANNEL 'release'
