@@ -51,26 +51,26 @@ python3.7 -c 'from calc_passwd import calc_passwd; print(calc_passwd("12345/E0QM
 
 ## Flash Modified RootFS (so far, only for the black version of the router!)
 - Obtain SSH Access
-- Download [squashfs-root.4.mod.bin](https://mega.nz/file/jI1gjagY#qw82cqG7P4fWU4zQaBtZeOwP2f8YTLYWN7aKXO4dLqk)
-- Copy `squashfs-root.4.mod.bin` to the router (on PC):
+- Download [flash.sh](https://raw.githubusercontent.com/eisaev/r2350/main/flash.sh)
+- Copy `flash.sh` to the router (on PC):
 ```
-scp squashfs-root.4.mod.bin root@192.168.31.1:/tmp/
+scp flash.sh root@192.168.31.1:/tmp/
+```
+- Download [squashfs-root.6.mod.bin](https://mega.nz/file/WAszla7J#66I_8tX7zLXnH9nawaap_UrKsifll-JjxetzGNejgc4)
+- Copy `squashfs-root.6.mod.bin` to the router (on PC):
+```
+scp squashfs-root.6.mod.bin root@192.168.31.1:/tmp/
 ```
 - Flash modified RootFS (on router):
 ```
-mtd write /tmp/squashfs-root.4.mod.bin rootfs
+/bin/ash /tmp/flash.sh &
 ```
-- Erase overlay data (on router):
-```
-mtd erase rootfs_data
-```
-- Reboot router (on router):
-```
-reboot
-```
+- SSH connection will be interrupted - this is normal.
+- Wait for the indicator to turn blue.
 - Reset router to factory defaults.
 
 ## Patch Bdata Partition (on router)
+This action is required only once.
 - Generate a dump of the `crash` partition:
 ```
 /root/scripts/crash.sh
@@ -101,6 +101,7 @@ reboot
 ```
 
 ## Patch art Partition (for black version only; on router)
+This action is required only once.
 - Generate a dump of the `crash` partition:
 ```
 /root/scripts/crash.sh

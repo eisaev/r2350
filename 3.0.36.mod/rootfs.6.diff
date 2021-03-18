@@ -1,0 +1,148 @@
+Файл squashfs-root.5.mod/dev/console это специальный файл с посимвольным доступом, тогда как файл squashfs-root.6.mod/dev/console -- специальный файл с посимвольным доступом
+diff -urN squashfs-root.5.mod/etc/init.d/boot squashfs-root.6.mod/etc/init.d/boot
+--- squashfs-root.5.mod/etc/init.d/boot	2021-03-16 13:01:31.000000000 +0500
++++ squashfs-root.6.mod/etc/init.d/boot	2021-03-18 14:03:36.508123606 +0500
+@@ -12,7 +12,7 @@
+ 	[ -z "$files" ] && return 0
+ 	mkdir -p /tmp/.uci
+ 	for file in $files; do
+-		( . "./$(basename $file)" ) #$& rm -f "$file"
++		( . "./$(basename $file)" ) #&& rm -f "$file"
+ 	done
+ 	uci commit
+ }
+diff -urN squashfs-root.5.mod/etc/init.d/dropbear squashfs-root.6.mod/etc/init.d/dropbear
+--- squashfs-root.5.mod/etc/init.d/dropbear	2021-03-18 00:11:09.633602073 +0500
++++ squashfs-root.6.mod/etc/init.d/dropbear	2021-03-18 12:56:24.871794481 +0500
+@@ -129,12 +129,6 @@
+ 
+ start_service()
+ {
+-	# 稳定版不能打开ssh服务
+-	#flg_ssh=`nvram get ssh_en`
+-	#if [ "$flg_ssh" != "1" ]; then
+-	#	return 0
+-	#fi
+-	
+ 	[ -s /etc/dropbear/dropbear_rsa_host_key ] || keygen
+ 
+ 	. /lib/functions.sh
+diff -urN squashfs-root.5.mod/usr/lib/lua/luci/view/web/setting/wifi.htm squashfs-root.6.mod/usr/lib/lua/luci/view/web/setting/wifi.htm
+--- squashfs-root.5.mod/usr/lib/lua/luci/view/web/setting/wifi.htm	2021-03-12 17:29:43.000000000 +0500
++++ squashfs-root.6.mod/usr/lib/lua/luci/view/web/setting/wifi.htm	2021-03-18 14:55:45.024183937 +0500
+@@ -130,6 +130,17 @@
+             </div>
+         </div>
+ 
++        <div class="mod-set mod-wifi">
++            <div class="hd">
++                <h3>LED Switching</h3>
++                <div class="switch">
++                    <a href="#LEDswitch" id="LEDswitch" class="btn-switch btn-switch-on" data-on="1"></a>
++                </div>
++            </div>
++            <div class="bd">
++                <p>Enabling and disabling the LED indicators</p>
++            </div>
++        </div>
+ 
+         
+     </div>
+@@ -444,6 +455,25 @@
+ 
+         });
+ 
++        //get led info
++         $.getJSON('<%=luci.dispatcher.build_url("api","misystem","led")%>')
++        .done(function( rsp ){
++            if ( rsp.code == 0 ) {
++                 if( rsp.status == 1 ){
++                    $('#LEDswitch')
++                        .removeClass('btn-switch-off')
++                        .addClass('btn-switch-on')
++                        .attr('data-on', '1');
++                 }else{
++                    $('#LEDswitch')
++                        .removeClass('btn-switch-on')
++                        .addClass('btn-switch-off')
++                        .attr('data-on', '0');
++                 }
++            }
++
++        });
++
+         // get wifi and rander html
+         var containers = ['wifiset24', 'wifiset50'],
+             roamContainer = ['roamset24', 'roamset50'],
+@@ -934,6 +964,46 @@
+                 }
+             });
+ 
++        });
++
++        $('#LEDswitch').on('click', function(e){
++            e.preventDefault();
++            var on = $(this).attr('data-on') == 1 ? 0:1;
++            var self = this;
++            var requestData = {
++                on: on
++            };
++            $.ajax({
++                url: '<%=luci.dispatcher.build_url("api", "misystem", "led")%>',
++                dataType: 'json',
++                timeout: 5000,
++                type: 'POST',
++                data: requestData,
++                success: function( rsp ){
++                    if( rsp.code === 0 ){
++                        if(on == 0) {
++                            $(self)
++                            .removeClass('btn-switch-on')
++                            .addClass('btn-switch-off')
++                            .attr('data-on', '0');
++                        }else {
++                            $(self)
++                            .removeClass('btn-switch-off')
++                            .addClass('btn-switch-on')
++                            .attr('data-on', '1');
++                        }
++                    } else {
++                        if ( rsp.code !== 401) {
++                            var msg = StringH.encode4Html( rsp.msg );
++                            $.alert( msg ).lock();
++                        }
++                    }
++                },
++                error: function() {
++                    $.alert( '<%:LED switching failed%>' );
++                }
++            });
++
+         });
+ 
+ 
+diff -urN squashfs-root.5.mod/usr/lib/lua/xiaoqiang/util/XQWifiUtil.lua squashfs-root.6.mod/usr/lib/lua/xiaoqiang/util/XQWifiUtil.lua
+--- squashfs-root.5.mod/usr/lib/lua/xiaoqiang/util/XQWifiUtil.lua	2021-03-13 19:04:56.000000000 +0500
++++ squashfs-root.6.mod/usr/lib/lua/xiaoqiang/util/XQWifiUtil.lua	2021-03-18 12:58:05.622891197 +0500
+@@ -770,7 +770,6 @@
+         item["signal"] = wifiNet.networks[index].signal
+         item["password"] = key
+         item["encryption"] = encryption
+---        item["txpwr"] = wifiNet.networks[index].txpwr
+         item["txpwr"] = wifiNet.networks[index].txpower
+         item["max_power"] = getWifiMaxPower(wifiNet.device)
+         item["bsd"] = wifiNet.networks[index].bsd
+diff -urN squashfs-root.5.mod/usr/share/xiaoqiang/xiaoqiang_version squashfs-root.6.mod/usr/share/xiaoqiang/xiaoqiang_version
+--- squashfs-root.5.mod/usr/share/xiaoqiang/xiaoqiang_version	2021-03-18 00:13:25.408738977 +0500
++++ squashfs-root.6.mod/usr/share/xiaoqiang/xiaoqiang_version	2021-03-18 14:52:39.429716078 +0500
+@@ -1,8 +1,8 @@
+ config core 'version'
+ 	# ROM ver
+-	option ROM '3.0.36_mod5'
++	option ROM '3.0.36_mod6
+ 	# channel
+-	option CHANNEL 'custom'
++	option CHANNEL 'release'
+ 	# hardware platform
+ 	option HARDWARE 'R2350'
+ 	# CFE ver

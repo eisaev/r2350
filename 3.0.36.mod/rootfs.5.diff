@@ -1,0 +1,33 @@
+Файл squashfs-root.4.mod/dev/console это специальный файл с посимвольным доступом, тогда как файл squashfs-root.5.mod/dev/console -- специальный файл с посимвольным доступом
+diff -urN squashfs-root.4.mod/etc/init.d/dropbear squashfs-root.5.mod/etc/init.d/dropbear
+--- squashfs-root.4.mod/etc/init.d/dropbear	2021-01-08 23:20:02.000000000 +0500
++++ squashfs-root.5.mod/etc/init.d/dropbear	2021-03-18 00:11:09.633602073 +0500
+@@ -130,10 +130,10 @@
+ start_service()
+ {
+ 	# 稳定版不能打开ssh服务
+-	flg_ssh=`nvram get ssh_en`
+-	if [ "$flg_ssh" != "1" ]; then
+-		return 0
+-	fi
++	#flg_ssh=`nvram get ssh_en`
++	#if [ "$flg_ssh" != "1" ]; then
++	#	return 0
++	#fi
+ 	
+ 	[ -s /etc/dropbear/dropbear_rsa_host_key ] || keygen
+ 
+diff -urN squashfs-root.4.mod/usr/share/xiaoqiang/xiaoqiang_version squashfs-root.5.mod/usr/share/xiaoqiang/xiaoqiang_version
+--- squashfs-root.4.mod/usr/share/xiaoqiang/xiaoqiang_version	2021-01-08 22:37:04.000000000 +0500
++++ squashfs-root.5.mod/usr/share/xiaoqiang/xiaoqiang_version	2021-03-18 00:13:25.408738977 +0500
+@@ -1,8 +1,8 @@
+ config core 'version'
+ 	# ROM ver
+-	option ROM '3.0.36'
++	option ROM '3.0.36_mod5'
+ 	# channel
+-	option CHANNEL 'release'
++	option CHANNEL 'custom'
+ 	# hardware platform
+ 	option HARDWARE 'R2350'
+ 	# CFE ver
