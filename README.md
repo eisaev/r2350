@@ -49,7 +49,7 @@ python3.7 -c 'from calc_passwd import calc_passwd; print(calc_passwd("12345/E0QM
 ```
 - [Online](https://www.oxygen7.cn/miwifi/)
 
-## Flash Modified RootFS (so far, only for the black version of the router!)
+## Flash Modified RootFS (tested on both the white and black versions)
 - Obtain SSH Access
 - Download [flash.sh](https://raw.githubusercontent.com/eisaev/r2350/main/flash.sh)
 - Copy `flash.sh` to the router (on PC):
@@ -101,7 +101,7 @@ reboot
 ```
 
 ## Patch art Partition (for black version only; on router)
-This action is required only once.
+Required only on the black version of the router. This action is required only once.
 - Generate a dump of the `crash` partition:
 ```
 /root/scripts/crash.sh
