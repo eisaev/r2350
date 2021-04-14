@@ -67,7 +67,7 @@ scp squashfs-root.6.mod.bin root@192.168.31.1:/tmp/
 ```
 - SSH connection will be interrupted - this is normal.
 - Wait for the indicator to turn blue.
-- Reset router to factory defaults.
+- Reset router to factory defaults using the physical reset button.
 
 ## Patch Bdata Partition (on router)
 This action is required only once.
