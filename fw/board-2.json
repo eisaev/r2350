@@ -1,0 +1,8 @@
+[
+    {
+        "data": "boardData_QCA9988_CAS04_4x4_80M_5G_v1_016.bin", 
+        "names": [
+            "bus=pci,bmi-chip-id=0,bmi-board-id=16"
+        ]
+    }
+]
