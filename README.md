@@ -144,3 +144,22 @@ If you have a healthy bootloader, you can use recovery via TFTP using programs l
 ## Debricking
 You will need a full dump of your flash, a CH341 programmer, and a clip for in-circuit programming.
 
+## Install OpenWRT (testing!)
+- Obtain SSH Access
+- Download [flash_fw.sh](https://raw.githubusercontent.com/eisaev/r2350/main/openwrt/flash_fw.sh)
+- Copy `flash_fw.sh` to the router (on PC):
+```
+scp flash_fw.sh root@192.168.31.1:/tmp/
+```
+- Download [openwrt-ath79-generic-xiaomi_aiot-ac2350-squashfs-sysupgrade.bin](https://raw.githubusercontent.com/eisaev/r2350/main/openwrt/openwrt-ath79-generic-xiaomi_aiot-ac2350-squashfs-sysupgrade.bin)
+- Copy `openwrt-ath79-generic-xiaomi_aiot-ac2350-squashfs-sysupgrade.bin` to the router (on PC):
+```
+scp openwrt-ath79-generic-xiaomi_aiot-ac2350-squashfs-sysupgrade.bin root@192.168.31.1:/tmp/
+```
+- Flash OpenWRT (on router):
+```
+/bin/ash /tmp/flash_fw.sh &
+```
+- SSH connection will be interrupted - this is normal.
+- Wait for the indicator to turn blue.
+
