@@ -4,7 +4,7 @@
 
 board_prepare_upgrade
 mtd erase rootfs_data
-mtd write /tmp/squashfs-root.6.mod.bin rootfs
+mtd write /tmp/firmware.6.mod.bin firmware
 sleep 3
 reboot
 

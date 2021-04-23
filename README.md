@@ -49,21 +49,21 @@ python3.7 -c 'from calc_passwd import calc_passwd; print(calc_passwd("12345/E0QM
 ```
 - [Online](https://www.oxygen7.cn/miwifi/)
 
-## Flash Modified RootFS (tested on both the white and black versions)
+## Flash Modified Firmware (tested on both the white and black versions)
 - Obtain SSH Access
-- Download [flash.sh](https://raw.githubusercontent.com/eisaev/r2350/main/flash.sh)
-- Copy `flash.sh` to the router (on PC):
+- Download [flash_fw.sh](https://raw.githubusercontent.com/eisaev/r2350/main/3.0.36.mod/flash_fw.sh)
+- Copy `flash_fw.sh` to the router (on PC):
 ```
-scp flash.sh root@192.168.31.1:/tmp/
+scp flash_fw.sh root@192.168.31.1:/tmp/
 ```
-- Download [squashfs-root.6.mod.bin](https://mega.nz/file/bZ8UjY5D#rq7A9eAaRmjVFZWyvbY6Dpg4uy948eKETy7kUdC1N24)
-- Copy `squashfs-root.6.mod.bin` to the router (on PC):
+- Download [firmware.6.mod.bin](https://mega.nz/file/aVskSKza#YAGWTYJoS28eygXCJvpaKfXq5_WPvuKWg4NltmC3q1A)
+- Copy `firmware.6.mod.bin` to the router (on PC):
 ```
-scp squashfs-root.6.mod.bin root@192.168.31.1:/tmp/
+scp firmware.6.mod.bin root@192.168.31.1:/tmp/
 ```
-- Flash modified RootFS (on router):
+- Flash modified firmware (on router):
 ```
-/bin/ash /tmp/flash.sh &
+/bin/ash /tmp/flash_fw.sh &
 ```
 - SSH connection will be interrupted - this is normal.
 - Wait for the indicator to turn blue.
