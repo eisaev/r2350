@@ -56,10 +56,10 @@ Tip: backup of the original firmware, taken three times, increases the chances o
 ```
 scp flash_fw.sh root@192.168.31.1:/tmp/
 ```
-- Download [firmware.6.mod.bin](https://mega.nz/file/aVskSKza#YAGWTYJoS28eygXCJvpaKfXq5_WPvuKWg4NltmC3q1A)
-- Copy `firmware.6.mod.bin` to the router (on PC):
+- Download [firmware.7.mod.bin](https://mega.nz/file/CRUlgI5R#NWJAsxw0JiFMEe4gfeGhFXbdCrrmma-7qPt0AuyS_cY)
+- Copy `firmware.7.mod.bin` to the router (on PC):
 ```
-scp firmware.6.mod.bin root@192.168.31.1:/tmp/
+scp firmware.7.mod.bin root@192.168.31.1:/tmp/
 ```
 - Flash modified firmware (on router):
 ```
