@@ -139,12 +139,27 @@ http://192.168.31.1/cgi-bin/luci/;stok=<STOK>/api/misystem/led?on=0
 ```
 
 ## Debricking (lite)
-If you have a healthy bootloader, you can use recovery via TFTP using programs like TinyPXE on Windows or dnsmasq on Linux. To switch the router to TFTP recovery mode, hold down the reset button, connect the power supply, and release the button after about 10 seconds. The router must be connected directly to the PC via the LAN port.
+If you have a healthy bootloader, you can use recovery via TFTP using programs like TinyPXE on Windows (with firewalls disabled!) or dnsmasq on Linux.
 
-## Debricking
+- set up your PCs network card on the static IP address 192.168.31.100
+- the router must be connected directly to the PC via the one of the routers LAN ports
+- download the [miwifi_r2350_firmware_0cc61_1.3.8.bin](https://cdn.cnbj1.fds.api.mi-img.com/xiaoqiang/rom/r2350/miwifi_r2350_firmware_0cc61_1.3.8.bin) firmware or use the identical [firmware](https://github.com/eisaev/r2350/raw/main/fw/miwifi_r2350_firmware_0cc61_1.3.8.bin.7z) from this repo and unzip it
+- copy the firmware to the TFTP directory and rename it to `test.img`
+- start the TFTP server (for TinyPXE: select `test.img` and set it to `Online`)
+
+To switch the router to TFTP recovery mode, hold down the reset button, connect the power supply and release the reset button after the steady enlightened orange LED starts blinking (about 10 seconds after power up). The blinking orange LED also indicates that you still have a healthy bootloader.
+
+Check the LAN LEDs (or the TinyPXE log output) to see the whether the data is transferred to the router. Once the blue LED starts flashing fast, you can reboot the router by disconnecting and reconnecting the power supply.
+
+After the reboot the orange LED becomes steady which is fine: The original firmware waits for the initial setup.
+
+## Debricking (in the case of unhealthy bootloader)
 You will need a full dump of your flash, a CH341 programmer, and a clip for in-circuit programming.
 
 ## Install OpenWRT (testing!)
+
+Before installing OpenWrt on a black version of the router you should follow the 'Patch art Partition' section to be able to switch the 2.4 GHz WiFi transmission power limits from the OpenWrt application. The `art` partition can not be unlocked and altered after installing OpenWRT so you need to do this with the original firmware.
+
 - Obtain SSH Access
 - Download [flash_fw.sh](https://raw.githubusercontent.com/eisaev/r2350/main/openwrt/flash_fw.sh)
 - Copy `flash_fw.sh` to the router (on PC):
