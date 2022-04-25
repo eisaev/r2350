@@ -36,30 +36,35 @@ printf "%s6d2df50a-250f-4a30-a5e6-d44fb0960aa0" "12345/E0QM98765" | md5 | head -
 python3.7 -c 'from calc_passwd import calc_passwd; print(calc_passwd("12345/E0QM98765"))'
 ```
 - [Online](https://www.oxygen7.cn/miwifi/)
-
+## Obtain your OpenSSH version
+```
+ssh -V
+```
 ## Create Full Backup
 - Obtain SSH Access
 - Create backup of all flash (on router):
 ```
 dd if=/dev/mtd0 of=/tmp/ALL.backup
 ```
-- Copy backup to PC (on PC):
+- Copy backup to PC (on PC, if OpenSSH version < 9.0):
 ```
 scp root@192.168.31.1:/tmp/ALL.backup ./
+```
+- Copy backup to PC (on PC, if OpenSSH version >= 9.0, see https://github.com/eisaev/r2350/issues/15):
+```
+scp -O root@192.168.31.1:/tmp/ALL.backup ./
 ```
 Tip: backup of the original firmware, taken three times, increases the chances of recovery :)
 
 ## Flash Modified Firmware (tested on both the white and black versions)
 - Obtain SSH Access
-- Download [flash_fw.sh](https://raw.githubusercontent.com/eisaev/r2350/main/3.0.36.mod/flash_fw.sh)
-- Copy `flash_fw.sh` to the router (on PC):
+- Download `flash_fw.sh` (on router):
 ```
-scp flash_fw.sh root@192.168.31.1:/tmp/
+curl https://raw.githubusercontent.com/eisaev/r2350/main/3.0.36.mod/flash_fw.sh --output /tmp/flash_fw.sh
 ```
-- Download [firmware.7.mod.bin](https://mega.nz/file/CRUlgI5R#NWJAsxw0JiFMEe4gfeGhFXbdCrrmma-7qPt0AuyS_cY)
-- Copy `firmware.7.mod.bin` to the router (on PC):
+- Download `firmware.7.mod.bin` (on router):
 ```
-scp firmware.7.mod.bin root@192.168.31.1:/tmp/
+curl https://raw.githubusercontent.com/sh4tteredd/r2350/main/fw/firmware.7.mod.bin --output /tmp/firmware.7.mod.bin
 ```
 - Flash modified firmware (on router):
 ```
@@ -68,6 +73,7 @@ scp firmware.7.mod.bin root@192.168.31.1:/tmp/
 - SSH connection will be interrupted - this is normal.
 - Wait for the indicator to turn blue.
 - Reset router to factory defaults using the physical reset button.
+
 
 ## Patch Bdata Partition (on router)
 This action is required only once.
