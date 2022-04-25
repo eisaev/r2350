@@ -167,15 +167,13 @@ You will need a full dump of your flash, a CH341 programmer, and a clip for in-c
 Before installing OpenWrt on a black version of the router you should follow the 'Patch art Partition' section to be able to switch the 2.4 GHz WiFi transmission power limits from the OpenWrt application. The `art` partition can not be unlocked and altered after installing OpenWRT so you need to do this with the original firmware.
 
 - Obtain SSH Access
-- Download [flash_fw.sh](https://raw.githubusercontent.com/eisaev/r2350/main/openwrt/flash_fw.sh)
-- Copy `flash_fw.sh` to the router (on PC):
+- Download `flash_fw.sh` (on router):
 ```
-scp flash_fw.sh root@192.168.31.1:/tmp/
+curl https://raw.githubusercontent.com/eisaev/r2350/main/openwrt/flash_fw.sh --output /tmp/flash_fw.sh
 ```
-- Download [openwrt-ath79-generic-xiaomi_aiot-ac2350-squashfs-sysupgrade.bin](https://raw.githubusercontent.com/eisaev/r2350/main/openwrt/openwrt-ath79-generic-xiaomi_aiot-ac2350-squashfs-sysupgrade.bin)
-- Copy `openwrt-ath79-generic-xiaomi_aiot-ac2350-squashfs-sysupgrade.bin` to the router (on PC):
+- Download `openwrt-ath79-generic-xiaomi_aiot-ac2350-squashfs-sysupgrade.bin` (on router):
 ```
-scp openwrt-ath79-generic-xiaomi_aiot-ac2350-squashfs-sysupgrade.bin root@192.168.31.1:/tmp/
+curl https://raw.githubusercontent.com/eisaev/r2350/main/openwrt/openwrt-ath79-generic-xiaomi_aiot-ac2350-squashfs-sysupgrade.bin --output /tmp/openwrt-ath79-generic-xiaomi_aiot-ac2350-squashfs-sysupgrade.bin
 ```
 - Flash OpenWRT (on router):
 ```
@@ -183,4 +181,3 @@ scp openwrt-ath79-generic-xiaomi_aiot-ac2350-squashfs-sysupgrade.bin root@192.16
 ```
 - SSH connection will be interrupted - this is normal.
 - Wait for the indicator to turn blue.
-
