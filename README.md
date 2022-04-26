@@ -36,30 +36,35 @@ printf "%s6d2df50a-250f-4a30-a5e6-d44fb0960aa0" "12345/E0QM98765" | md5 | head -
 python3.7 -c 'from calc_passwd import calc_passwd; print(calc_passwd("12345/E0QM98765"))'
 ```
 - [Online](https://www.oxygen7.cn/miwifi/)
-
+## Obtain your OpenSSH version (on PC)
+```
+ssh -V
+```
 ## Create Full Backup
 - Obtain SSH Access
 - Create backup of all flash (on router):
 ```
 dd if=/dev/mtd0 of=/tmp/ALL.backup
 ```
-- Copy backup to PC (on PC):
+- Copy backup to PC (on PC, if OpenSSH version < 9.0):
 ```
 scp root@192.168.31.1:/tmp/ALL.backup ./
 ```
+- Copy backup to PC (on PC, if OpenSSH version >= 9.0, see https://github.com/eisaev/r2350/issues/15):
+```
+scp -O root@192.168.31.1:/tmp/ALL.backup ./
+```
 Tip: backup of the original firmware, taken three times, increases the chances of recovery :)
 
-## Flash Modified Firmware (tested on both the white and black versions)
+## Flash Modified Firmware with router connected to internet (tested on both the white and black versions)
 - Obtain SSH Access
-- Download [flash_fw.sh](https://raw.githubusercontent.com/eisaev/r2350/main/3.0.36.mod/flash_fw.sh)
-- Copy `flash_fw.sh` to the router (on PC):
+- Download `flash_fw.sh` (on router):
 ```
-scp flash_fw.sh root@192.168.31.1:/tmp/
+curl https://raw.githubusercontent.com/eisaev/r2350/main/3.0.36.mod/flash_fw.sh --output /tmp/flash_fw.sh
 ```
-- Download [firmware.7.mod.bin](https://mega.nz/file/CRUlgI5R#NWJAsxw0JiFMEe4gfeGhFXbdCrrmma-7qPt0AuyS_cY)
-- Copy `firmware.7.mod.bin` to the router (on PC):
+- Download `firmware.7.mod.bin` (on router):
 ```
-scp firmware.7.mod.bin root@192.168.31.1:/tmp/
+curl https://raw.githubusercontent.com/sh4tteredd/r2350/main/fw/firmware.7.mod.bin --output /tmp/firmware.7.mod.bin
 ```
 - Flash modified firmware (on router):
 ```
@@ -68,6 +73,36 @@ scp firmware.7.mod.bin root@192.168.31.1:/tmp/
 - SSH connection will be interrupted - this is normal.
 - Wait for the indicator to turn blue.
 - Reset router to factory defaults using the physical reset button.
+
+## Flash Modified Firmware with offline router (tested on both the white and black versions) 
+- Obtain SSH Access
+- Download [flash_fw.sh](https://raw.githubusercontent.com/eisaev/r2350/main/3.0.36.mod/flash_fw.sh) on your PC
+- Copy `flash_fw.sh` to the router (on PC, if openSSH version is < 9):
+```
+scp flash_fw.sh root@192.168.31.1:/tmp/
+```
+- Or copy `flash_fw.sh` to the router (on PC, if openSSH version is >= 9):
+```
+scp -O flash_fw.sh root@192.168.31.1:/tmp/
+```
+- Download [firmware.7.mod.bin](https://raw.githubusercontent.com/sh4tteredd/r2350/main/fw/firmware.7.mod.bin) on your PC
+- Copy `firmware.7.mod.bin` to the router (on PC, if openSSH version is < 9):
+```
+scp firmware.7.mod.bin root@192.168.31.1:/tmp/
+```
+- Or copy `firmware.7.mod.bin` to the router (on PC, if openSSH version is >= 9):
+```
+scp -O firmware.7.mod.bin root@192.168.31.1:/tmp/
+```
+- Flash modified firmware (on router):
+```
+/bin/ash /tmp/flash_fw.sh &
+```
+- SSH connection will be interrupted - this is normal.
+- Wait for the indicator to turn blue.
+- Reset router to factory defaults using the physical reset button.
+
+
 
 ## Patch Bdata Partition (on router)
 This action is required only once.
@@ -156,20 +191,18 @@ After the reboot the orange LED becomes steady which is fine: The original firmw
 ## Debricking (in the case of unhealthy bootloader)
 You will need a full dump of your flash, a CH341 programmer, and a clip for in-circuit programming.
 
-## Install OpenWRT (testing!)
+## Install OpenWRT with router connected to internet (testing!)
 
 Before installing OpenWrt on a black version of the router you should follow the 'Patch art Partition' section to be able to switch the 2.4 GHz WiFi transmission power limits from the OpenWrt application. The `art` partition can not be unlocked and altered after installing OpenWRT so you need to do this with the original firmware.
 
 - Obtain SSH Access
-- Download [flash_fw.sh](https://raw.githubusercontent.com/eisaev/r2350/main/openwrt/flash_fw.sh)
-- Copy `flash_fw.sh` to the router (on PC):
+- Download `flash_fw.sh` (on router):
 ```
-scp flash_fw.sh root@192.168.31.1:/tmp/
+curl https://raw.githubusercontent.com/eisaev/r2350/main/openwrt/flash_fw.sh --output /tmp/flash_fw.sh
 ```
-- Download [openwrt-ath79-generic-xiaomi_aiot-ac2350-squashfs-sysupgrade.bin](https://raw.githubusercontent.com/eisaev/r2350/main/openwrt/openwrt-ath79-generic-xiaomi_aiot-ac2350-squashfs-sysupgrade.bin)
-- Copy `openwrt-ath79-generic-xiaomi_aiot-ac2350-squashfs-sysupgrade.bin` to the router (on PC):
+- Download `openwrt-ath79-generic-xiaomi_aiot-ac2350-squashfs-sysupgrade.bin` (on router):
 ```
-scp openwrt-ath79-generic-xiaomi_aiot-ac2350-squashfs-sysupgrade.bin root@192.168.31.1:/tmp/
+curl https://raw.githubusercontent.com/eisaev/r2350/main/openwrt/openwrt-ath79-generic-xiaomi_aiot-ac2350-squashfs-sysupgrade.bin --output /tmp/openwrt-ath79-generic-xiaomi_aiot-ac2350-squashfs-sysupgrade.bin
 ```
 - Flash OpenWRT (on router):
 ```
@@ -178,3 +211,32 @@ scp openwrt-ath79-generic-xiaomi_aiot-ac2350-squashfs-sysupgrade.bin root@192.16
 - SSH connection will be interrupted - this is normal.
 - Wait for the indicator to turn blue.
 
+## Install OpenWRT with router offline (testing!)
+
+Before installing OpenWrt on a black version of the router you should follow the 'Patch art Partition' section to be able to switch the 2.4 GHz WiFi transmission power limits from the OpenWrt application. The `art` partition can not be unlocked and altered after installing OpenWRT so you need to do this with the original firmware.
+
+- Obtain SSH Access
+- Download [flash_fw.sh](https://raw.githubusercontent.com/eisaev/r2350/main/openwrt/flash_fw.sh)
+- Copy `flash_fw.sh` to the router (on PC, if openSSH version is < 9):
+```
+scp flash_fw.sh root@192.168.31.1:/tmp/
+```
+- Or copy `flash_fw.sh` to the router (on PC, if openSSH version is >= 9):
+```
+scp -O flash_fw.sh root@192.168.31.1:/tmp/
+```
+- Download [openwrt-ath79-generic-xiaomi_aiot-ac2350-squashfs-sysupgrade.bin](https://raw.githubusercontent.com/eisaev/r2350/main/openwrt/openwrt-ath79-generic-xiaomi_aiot-ac2350-squashfs-sysupgrade.bin)
+- Copy `openwrt-ath79-generic-xiaomi_aiot-ac2350-squashfs-sysupgrade.bin` to the router (on PC, if openSSH version is < 9):
+```
+scp openwrt-ath79-generic-xiaomi_aiot-ac2350-squashfs-sysupgrade.bin root@192.168.31.1:/tmp/
+```
+- Copy `openwrt-ath79-generic-xiaomi_aiot-ac2350-squashfs-sysupgrade.bin` to the router (on PC, if openSSH version is >= 9):
+```
+scp -O openwrt-ath79-generic-xiaomi_aiot-ac2350-squashfs-sysupgrade.bin root@192.168.31.1:/tmp/
+```
+- Flash OpenWRT (on router):
+```
+/bin/ash /tmp/flash_fw.sh &
+```
+- SSH connection will be interrupted - this is normal.
+- Wait for the indicator to turn blue.
