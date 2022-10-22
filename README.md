@@ -35,7 +35,7 @@ printf "%s6d2df50a-250f-4a30-a5e6-d44fb0960aa0" "12345/E0QM98765" | md5 | head -
 ```
 python3.7 -c 'from calc_passwd import calc_passwd; print(calc_passwd("12345/E0QM98765"))'
 ```
-- [Online](https://www.oxygen7.cn/miwifi/)
+- [Online](https://miwifi.dev/ssh)
 
 ## Create Full Backup
 - Obtain SSH Access
