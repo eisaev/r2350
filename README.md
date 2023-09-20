@@ -154,3 +154,33 @@ You will need a full dump of your flash, a CH341 programmer, and a clip for in-c
 Please use the official [documentation](https://openwrt.org/toh/xiaomi/aiot_router_ac2350#installation) on the OpenWRT website.
 
 NB! Before installing OpenWrt on a black version of the router you should follow the 'Patch art Partition' section to be able to switch the 2.4 GHz WiFi transmission power limits from the OpenWrt application. The `art` partition can not be unlocked and altered after installing OpenWRT so you need to do this with the original firmware.
+
+## Repackaging the firmware (3.0.36 INT only!)
+### On macOS
+1. Install required software
+```
+brew install p7zip squashfs
+```
+2. Extract international version of the stock firmware
+```
+cd utils
+7z x ../fw/miwifi_r2350_firmware_bd55f_3.0.36_INT.bin.7z
+```
+3. Unpack kernel and root FS  
+NB! It's really slow because it uses `dd` with a block size of 1, you can use `binwalk` as an alternative.
+```
+./unpack.sh
+```
+4. Unsquash root FS (`my` is the name of your mod)
+```
+sudo ./unsquash.sh my
+```
+5. Make changes in `squashfs-root.my.mod` directory
+6. Pack firmware
+```
+sudo ./pack.sh my
+```
+7. Fix permissions
+```
+sudo chown $(id -un):$(id -gn) firmware.my.mod.bin
+```
