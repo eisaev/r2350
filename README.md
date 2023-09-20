@@ -131,13 +131,6 @@ mtd erase crash
 reboot
 ```
 
-## Disable LED
-- Login to the router web interface and get the value of `stok=` from the URL
-- Open a new tab and go to the following URL (replace <STOK> with the stok value gained above):
-```
-http://192.168.31.1/cgi-bin/luci/;stok=<STOK>/api/misystem/led?on=0
-```
-
 ## Debricking (lite)
 If you have a healthy bootloader, you can use recovery via TFTP using programs like TinyPXE on Windows (with firewalls disabled!) or dnsmasq on Linux.
 
