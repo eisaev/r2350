@@ -21,7 +21,10 @@ http://192.168.31.1/cgi-bin/luci/;stok=<STOK>/api/misystem/set_config_iotdev?bss
 - Wait 30-60 seconds (this is the time required to generate keys for the SSH server on the router)
 
 ## Calculate The Password
-- Locally using shell (replace "12345/E0QM98765" with your router's serial number):
+
+#### - [Online](https://sh4tteredd.github.io/r2350/website.html)
+
+#### - Locally using shell (replace "12345/E0QM98765" with your router's serial number):
  
 On Linux
 ```
@@ -31,11 +34,11 @@ On macOS
 ```
 printf "%s6d2df50a-250f-4a30-a5e6-d44fb0960aa0" "12345/E0QM98765" | md5 | head -c8
 ```
-- Locally using python [script](https://github.com/eisaev/ax3600-files/blob/master/scripts/calc_passwd.py) (replace "12345/E0QM98765" with your router's serial number):
+#### - Locally using python [script](https://github.com/eisaev/ax3600-files/blob/master/scripts/calc_passwd.py) (replace "12345/E0QM98765" with your router's serial number):
 ```
 python3.7 -c 'from calc_passwd import calc_passwd; print(calc_passwd("12345/E0QM98765"))'
 ```
-- [Online](https://www.oxygen7.cn/miwifi/)
+
 ## Obtain your OpenSSH version (on PC)
 ```
 ssh -V
