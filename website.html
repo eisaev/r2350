@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiWIFI SSH</title>
+</head>
+
+<body>
+    <h1>MIWIFI Root password calculator</h1>
+    <label for="serial">Insert your serial number:</label>
+    <input type="text" id="serial" placeholder="12345/E0QM98765">
+    <button onclick="calcSSH()">Show password</button>
+    <p>Password: <span id="md5Result"></span></p>
+
+    <script>
+        function calcSSH() {
+            const serialInput = document.getElementById('serial').value;
+            if (serialInput !== "") {
+                const secretKey = "6d2df50a-250f-4a30-a5e6-d44fb0960aa0";
+                const hash = CryptoJS.MD5(serialInput + secretKey);
+                const md5Result = hash.toString(CryptoJS.enc.Hex).slice(0, 8);
+                document.getElementById('md5Result').textContent = md5Result;
+            }
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
+</body>
+
+</html>
