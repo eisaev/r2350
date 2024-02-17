@@ -11,56 +11,64 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 
     <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f5f5f5;
-            margin: 0;
-            padding: 0;
-        }
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+    }
 
-        h1 {
-            color: #2196F3;
-        }
+    h1 {
+        color: #2196F3;
+        font-size: 24px;
+    }
 
-        label {
-            display: block;
-            margin: 16px 0 8px;
-            font-size: 16px;
-            color: #333;
-        }
+    label {
+        display: block;
+        margin: 8px 0 4px;
+        font-size: 14px;
+        color: #333;
+    }
 
-        input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 16px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
+    input {
+        width: calc(100% - 20px);
+        padding: 8px;
+        margin-bottom: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 14px;
+    }
 
-        button {
-            background-color: #2196F3;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+    button {
+        background-color: #2196F3;
+        color: #fff;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+    }
 
-        button:hover {
-            background-color: #1565C0;
-        }
+    button:hover {
+        background-color: #1565C0;
+    }
 
-        p {
-            font-size: 18px;
-            margin-top: 16px;
-        }
+    p {
+        font-size: 16px;
+        margin-top: 12px;
+    }
 
-        span {
-            font-weight: bold;
-            color: #4CAF50;
-        }
-    </style>
+    span {
+        font-weight: bold;
+        color: #4CAF50;
+    }
+</style>
+
 </head>
 
 <body>
